@@ -67,7 +67,7 @@ namespace SimpleFacebookBackend.Controllers
                 Password = "adammalej"
             };
 
-            if (findUser == null)
+            if (findUser == null || !findUser.Email.Equals(user.Email) || !findUser.Password.Equals(user.Password))
             {
                 //TODO: json understand 'null' and get error, need to parse or send exception from backend to frontend
                 // that is not user about this email and password in database
