@@ -84,6 +84,25 @@ namespace SimpleFacebookBackend.Controllers
             });
         }
 
+        [HttpPost]
+        [Route("register")]
+        public async Task<IActionResult> Register([FromBody] User user)
+        {
+            if (!UserRequiredFields(user))
+            {
+                return BadRequest();
+            }
+
+           // _context.Add(user);
+            //await _context.SaveChangesAsync();
+            JwtSecurityToken token = GetToken();
+            token.Payload["user"] = user;
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token)
+            });
+        }
+
         private JwtSecurityToken GetToken()
         {
             var claims = new[]
