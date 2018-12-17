@@ -61,13 +61,13 @@ namespace SimpleFacebookBackend.Controllers
 
             User findUser = new User {
                 Id = 1,
-                Email = "adammalej1@gmail.com",
+                Mail = "adammalej1@gmail.com",
                 FirstName = "Adam",
                 LastName = "Malej",
                 Password = "adammalej"
             };
 
-            if (findUser == null || !findUser.Email.Equals(user.Email) || !findUser.Password.Equals(user.Password))
+            if (findUser == null || !findUser.Mail.Equals(user.Mail) || !findUser.Password.Equals(user.Password))
             {
                 //TODO: json understand 'null' and get error, need to parse or send exception from backend to frontend
                 // that is not user about this email and password in database
@@ -127,7 +127,7 @@ namespace SimpleFacebookBackend.Controllers
         {
             if (String.IsNullOrEmpty(user.FirstName)) return false;
             if (String.IsNullOrEmpty(user.LastName)) return false;
-            if (String.IsNullOrEmpty(user.Email)) return false;
+            if (String.IsNullOrEmpty(user.Mail)) return false;
             if (String.IsNullOrEmpty(user.Password)) return false;
             return true;
         }
