@@ -20,6 +20,7 @@ namespace SimpleFacebookBackend.Controllers
     [EnableCors("CorsPolicy")]
     public class ValuesController : ControllerBase
     {
+        FbDBContext _context = new FbDBContext();
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
@@ -57,15 +58,7 @@ namespace SimpleFacebookBackend.Controllers
         [DisableCors]
         public async Task<IActionResult> Login([FromBody] User user)
         {
-            //var findUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email && u.Password == user.Password);
-
-            User findUser = new User {
-                Id = 1,
-                Mail = "adammalej1@gmail.com",
-                FirstName = "Adam",
-                LastName = "Malej",
-                Password = "adammalej"
-            };
+            var findUser = await _context.User.FirstOrDefaultAsync(u => u.Mail == user.Mail && u.Password == user.Password);
 
             if (findUser == null || !findUser.Mail.Equals(user.Mail) || !findUser.Password.Equals(user.Password))
             {
