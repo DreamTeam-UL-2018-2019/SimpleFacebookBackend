@@ -112,11 +112,22 @@ namespace SimpleFacebookBackend.Controllers
         [Route("sendMessage")]
         public async void SendMessage(Message message)
         {
+           
             using (var context = new FbDBContext())
             {
                 context.Add(message);
-
                 await context.SaveChangesAsync();
+            }
+        }
+
+        [HttpGet]
+        [Route("getMessage")]
+        public string GetMessage(Message message)
+        {
+            using (var context = new FbDBContext())
+            {
+                var myMessage = context.Message.Find(message.Id);
+                return myMessage.Message1;
             }
         }
 
