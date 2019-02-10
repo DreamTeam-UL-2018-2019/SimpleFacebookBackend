@@ -96,6 +96,30 @@ namespace SimpleFacebookBackend.Controllers
             });
         }
 
+        [HttpPost]
+        [Route("ChatApp")]
+        public async Task<IActionResult> ChatApp([FromBody] User user)
+        {
+            JwtSecurityToken token = GetToken();
+            token.Payload["user"] = user;
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token)
+            });
+        }
+
+        [HttpPost]
+        [Route("sendMessage")]
+        public async void SendMessage(Message message)
+        {
+            using (var context = new FbDBContext())
+            {
+                context.Add(message);
+
+                await context.SaveChangesAsync();
+            }
+        }
+
         private JwtSecurityToken GetToken()
         {
             var claims = new[]
