@@ -57,8 +57,34 @@ namespace SimpleFacebookBackend.Controllers
             _context.SaveChanges();
             return NoContent();
         }
-    
+
         
+        [HttpPost]
+        [Route("saveChanges")]
+        public IActionResult Post([FromBody] User user)
+        {
+            User changedUser = new User();
+            changedUser = _context.User.FirstOrDefault(u => u.Id == user.Id);
+
+            changedUser.Description = (user.Description == changedUser.Description) ? changedUser.Description : user.Description;
+            changedUser.FirstName = (user.FirstName == changedUser.FirstName) ? changedUser.FirstName : user.FirstName;
+            changedUser.LastName = (user.LastName == changedUser.LastName) ? changedUser.LastName : user.LastName;
+            changedUser.Mail = (user.Mail == changedUser.Mail) ? changedUser.Mail : user.Mail;
+            changedUser.Password = (user.Password == changedUser.Password) ? changedUser.Password : user.Password;
+            changedUser.Phone = (user.Phone == changedUser.Phone) ? changedUser.Phone : user.Phone;
+            _context.SaveChanges();
+
+            JwtSecurityToken token = GetToken();
+
+            token.Payload["user"] = changedUser;
+
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token)
+            });
+        }
+
+
         [HttpPost]
         [Route("newGroup/{id}")]
         public IActionResult Post(Group obj, int id)
