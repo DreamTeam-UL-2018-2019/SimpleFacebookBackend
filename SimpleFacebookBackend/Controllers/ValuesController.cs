@@ -97,18 +97,6 @@ namespace SimpleFacebookBackend.Controllers
         }
 
         [HttpPost]
-        [Route("ChatApp")]
-        public async Task<IActionResult> ChatApp([FromBody] User user)
-        {
-            JwtSecurityToken token = GetToken();
-            token.Payload["user"] = user;
-            return Ok(new
-            {
-                token = new JwtSecurityTokenHandler().WriteToken(token)
-            });
-        }
-
-        [HttpPost]
         [Route("sendMessage")]
         public async void SendMessage(Message message)
         {
@@ -122,12 +110,14 @@ namespace SimpleFacebookBackend.Controllers
 
         [HttpGet]
         [Route("getMessage")]
-        public string GetMessage(Message message)
+        public List<Message> GetMessage()
         {
             using (var context = new FbDBContext())
             {
-                var myMessage = context.Message.Find(message.Id);
-                return myMessage.Message1;
+                //var myMessage = context.Message.Find(message.Id);
+                // return myMessage.Message1;
+                var myMessages = context.Message.ToList();
+                return myMessages;
             }
         }
 
