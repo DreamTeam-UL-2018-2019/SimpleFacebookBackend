@@ -28,29 +28,57 @@ namespace SimpleFacebookBackend.Controllers
             return new string[] { "value1", "value2" };
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
-        {
-            return "value";
-        }
+        //// GET api/values/5
+        //[HttpGet("{id}")]
+        //public ActionResult<string> Get(int id)
+        //{
+        //    return "value";
+        //}
 
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+        //// POST api/values
+        //[HttpPost]
+        //public void Post([FromBody] string value)
+        //{
+        //}
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        //// PUT api/values/5
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+        //}
 
         // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete]
+        [Route("delete/{id}/{id1}")]
+        public IActionResult DeleteGroup(int id, int id1)
         {
+            var userGroup = _context.UserGroup.Single(z => z.IdGroup == id && z.IdUser == id1);
+            _context.UserGroup.Remove(userGroup);
+            _context.SaveChanges();
+            return NoContent();
+        }
+    
+        
+        [HttpPost]
+        [Route("newGroup/{id}")]
+        public IActionResult Post(Group obj, int id)
+        {
+            Group newGroup = new Group();
+            newGroup.Name = obj.Name;
+            newGroup.Date = DateTime.Now;
+            _context.Group.Add(newGroup);
+            _context.SaveChanges();
+
+            var getIdNewGroup = _context.Group.FirstOrDefault(g => g.Name == obj.Name);
+            int groupId = getIdNewGroup.Id;
+
+            UserGroup ug = new UserGroup();
+            ug.IdGroup = groupId;
+            ug.IdUser = id;
+            _context.UserGroup.Add(ug);
+            _context.SaveChanges();
+
+            return Ok();
         }
 
         [HttpPost]
@@ -76,6 +104,18 @@ namespace SimpleFacebookBackend.Controllers
                 token = new JwtSecurityTokenHandler().WriteToken(token)
             });
         }
+
+        [HttpGet]
+        [Route("group/{id}")]
+        public async Task<IActionResult> Groups(int id)
+        {   
+
+            var userGroupName = _context.UserGroup.Where(u => u.IdUser == id).Join(_context.Group, a => a.IdGroup, b => b.Id, (a,b) => new { Id = b.Id, Name = b.Name });
+
+
+            return Ok(userGroupName);
+        }
+
 
         [HttpPost]
         [Route("register")]
@@ -124,5 +164,7 @@ namespace SimpleFacebookBackend.Controllers
             if (String.IsNullOrEmpty(user.Password)) return false;
             return true;
         }
+
+        
     }
 }
