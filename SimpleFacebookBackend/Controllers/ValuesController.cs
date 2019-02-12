@@ -84,6 +84,27 @@ namespace SimpleFacebookBackend.Controllers
             });
         }
 
+        [HttpPost]
+        [Route("sendMessage")]
+        public void SendMessage(Message message)
+        {
+            _context.Message.Add(message);
+            _context.SaveChanges();
+        }
+
+        [HttpGet]
+        [Route("getMessage")]
+        public List<Message> GetMessage(int id, int id1)
+        {
+            using (var context = new FbDBContext())
+            {
+                //var myMessage = context.Message.Find(message.Id);
+                // return myMessage.Message1;
+                var myMessages = context.Message.ToList();
+                return myMessages;
+            }
+        }
+
 
         [HttpPost]
         [Route("newGroup/{id}")]
@@ -172,18 +193,6 @@ namespace SimpleFacebookBackend.Controllers
             {
                 token = new JwtSecurityTokenHandler().WriteToken(token)
             });
-        }
-
-        [HttpPost]
-        [Route("sendMessage")]
-        public async void SendMessage(Message message)
-        {
-            using (var context = new FbDBContext())
-            {
-                context.Add(message);
-
-                await context.SaveChangesAsync();
-            }
         }
 
         private JwtSecurityToken GetToken()
